@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: business-idea-analyzer
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # JOBS가 메모리에 있으므로 워커는 1개로 둔다. 분석이 2~3분 걸리므로 타임아웃을 넉넉히.
+    startCommand: gunicorn app:app --workers 1 --threads 8 --timeout 300 --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: REQUIRE_INVITE
+        value: "1"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: INVITE_CODES
+        sync: false
