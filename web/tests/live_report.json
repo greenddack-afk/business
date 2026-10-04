@@ -1,0 +1,554 @@
+{
+ "idea_raw": "따뜻한 폼롤러",
+ "normalized": {
+  "product": "온열 기능이 탑재된 폼롤러 하드웨어로, 근육 이완 시 온기를 제공하는 소비재 제품",
+  "target": "운동 후 근육통·경직으로 고통받는 20~50대 피트니스 애호가 및 직장인",
+  "differentiator": "기존 냉각 또는 무가열 폼롤러 대비 온열 기능으로 혈류 촉진 및 회복 속도 향상",
+  "industry_code": "manufacturing",
+  "industry_confidence": 0.92,
+  "interpretation": "oem_import",
+  "alternative_interpretation": "국내 자체 제조로 볼 경우 발열체·온도 제어 회로 설계 및 금형 개발로 초기투자 5,000만원 이상 소요"
+ },
+ "verdict": {
+  "grade": "C",
+  "decision": "소규모 검증 후 재판단",
+  "one_liner": "제품 차별성보다 안전 인증·저온화상 리스크 관리가 생존을 가른다"
+ },
+ "assumptions": [
+  {
+   "key": "판매가",
+   "value": "69,000원",
+   "reason": "일반 폼롤러(1.8~5.8만원)와 온열 마사지기(8.5~62만원) 사이에서 온열 기능 프리미엄을 반영한 재무 분석 기준값"
+  },
+  {
+   "key": "초기 자본",
+   "value": "2,330만원(기본) ~ 4,350만원(인증·안전설계 강화 시)",
+   "reason": "중국·베트남 OEM 위탁 제조 기준 총 초기투자 합계, KC 인증 및 의료기기 검토 비용 포함 여부에 따라 변동"
+  },
+  {
+   "key": "판매 채널",
+   "value": "온라인(쿠팡·무신사·자체몰) 70%, 오프라인(피트니스센터·스포츠용품점) 30%",
+   "reason": "재무 분석에서 쿠팡 수수료 8%를 전제로 원가율·손익분기 계산에 반영"
+  },
+  {
+   "key": "제조 방식",
+   "value": "중국·베트남 OEM 위탁 생산, 국내 수입 후 판매",
+   "reason": "초기 자본 제약과 기술 난이도(온도제어 회로)를 고려한 현실적 모델"
+  },
+  {
+   "key": "손익분기",
+   "value": "월 75개 판매, 기본 시나리오 월 350개",
+   "reason": "재무 분석의 고정비 345만원·개당 기여이익 46,230원 기준 역산값"
+  }
+ ],
+ "scores": {
+  "market": {
+   "rubric_ref": "market:5-6",
+   "score": 5,
+   "rationale": "글로벌 폼롤러 시장은 2024년 약 3.3억달러에서 2033년 7.8억달러로 CAGR 10.2% 성장이 확인되나 한국 시장 규모 수치는 검색되지 않아 국내 수요 규모는 추정에 의존한다. 온열 회복 제품에 대한 소비자 트렌드는 긍정적이나 폼롤러 자체 세그먼트의 국내 데이터 부재로 상단 구간 부여는 어렵다.",
+   "adjusted_from": null
+  },
+  "competition": {
+   "rubric_ref": "competition:3-4",
+   "score": 2,
+   "rationale": "일반 폼롤러(트라택, 모크샤, 무브먼트)와 온열 마사지기(광진산업, 멜킨)가 이미 다수 유통 중이며 온열+회복 기능 결합 제품(풀리오 등 온열 마사지기)의 안전사고 이슈까지 보도되어 차별점인 '온열 폼롤러' 개념이 시장에서 완전히 새로운 것은 아니다. 저가 EVA 폼롤러가 1~2만원대로 범람하고 온열 마사지기 카테고리도 기존 브랜드가 점유해 진입장벽이 낮다.",
+   "adjusted_from": 3
+  },
+  "execution": {
+   "rubric_ref": "execution:5-6",
+   "score": 5,
+   "rationale": "OEM(위탁생산) 조달과 전자 발열체 결합 구조로 3~6개월 내 출시가 가능하나, 발열 기능으로 인해 KC 전기용품 인증이 필수이고 의료 효능을 표방할 경우 의료기기 인증까지 추가되어 단순 폼롤러 대비 일정이 늘어난다. 저가 OEM 실리콘·발포 소재 조달 자체는 용이하나 온도제어 회로·안전 설계는 별도 전문 인력 또는 외주 설계가 필요하다.",
+   "adjusted_from": null
+  },
+  "profitability": {
+   "rubric_ref": "profitability:9-10",
+   "score": 9,
+   "rationale": "일반 폼롤러 대비 3~4배 판매가를 책정해 기여이익률은 확보되나, 저온화상 안전사고 이슈로 반품률·A/S 비용이 표의 기본값보다 높을 가능성이 있어 보수적으로 본다. 초기투자 규모 대비 회수 기간은 기본 시나리오에서 12개월 내 빠듯하게 가능한 수준으로 추정한다. (계산된 기여이익률 67%·BEP 비율 21%에 맞춰 5→9점으로 조정)",
+   "adjusted_from": null
+  },
+  "risk": {
+   "rubric_ref": "risk:3-4",
+   "score": 2,
+   "rationale": "발열 기능이 인체 피부에 직접 닿는 제품으로 저온화상 등 안전사고 사례가 동일 카테고리(온열 마사지기)에서 다수 확인되어 인명·법적 책임 리스크가 크다. 재고 기반 하드웨어 판매이며 해외 OEM 단일 공급처 의존 구조까지 겹쳐 통제 난이도가 높다.",
+   "adjusted_from": 3
+  }
+ },
+ "market": {
+  "scores": {
+   "market": {
+    "rubric_ref": "market:5-6",
+    "score": 5,
+    "rationale": "글로벌 폼롤러 시장은 2024년 약 3.3억달러에서 2033년 7.8억달러로 CAGR 10.2% 성장이 확인되나 한국 시장 규모 수치는 검색되지 않아 국내 수요 규모는 추정에 의존한다. 온열 회복 제품에 대한 소비자 트렌드는 긍정적이나 폼롤러 자체 세그먼트의 국내 데이터 부재로 상단 구간 부여는 어렵다."
+   },
+   "competition": {
+    "rubric_ref": "competition:3-4",
+    "score": 3,
+    "rationale": "일반 폼롤러(트라택, 모크샤, 무브먼트)와 온열 마사지기(광진산업, 멜킨)가 이미 다수 유통 중이며 온열+회복 기능 결합 제품(풀리오 등 온열 마사지기)의 안전사고 이슈까지 보도되어 차별점인 '온열 폼롤러' 개념이 시장에서 완전히 새로운 것은 아니다. 저가 EVA 폼롤러가 1~2만원대로 범람하고 온열 마사지기 카테고리도 기존 브랜드가 점유해 진입장벽이 낮다."
+   }
+  },
+  "summary": "글로벌 폼롤러 시장은 연 10%대 성장이 확인되나 한국 시장 고유 데이터는 부재해 시장성 판단은 추정치 비중이 크다. 경쟁은 저가 일반 폼롤러와 온열 마사지기 카테고리가 이미 혼재해 있어 '온열 폼롤러'라는 결합 자체는 신규성이 제한적이며, 온열 기능 제품의 저온화상 등 안전 이슈가 최근 반복 보도된 점도 진입 리스크로 작용한다.",
+  "size": {
+   "value": 325.53,
+   "unit": "글로벌 백만달러/년",
+   "source_url": "https://www.themarketintelligence.com/market-reports/foam-roller-market-1015",
+   "confidence": "sourced"
+  },
+  "growth": {
+   "value": 10.2,
+   "unit": "%/년",
+   "source_url": "https://www.themarketintelligence.com/market-reports/foam-roller-market-1015",
+   "confidence": "sourced"
+  },
+  "competition_level": "상",
+  "competitors": [
+   {
+    "name": "트라택 EVA/EPP 폼롤러",
+    "positioning": "2만원대 저가 일반 폼롤러",
+    "url": "https://spofl.co.kr/category/%ED%8F%BC%EB%A1%A4%EB%9F%AC%EB%A7%88%EC%82%AC%EC%A7%80/175/",
+    "note": "온열 기능 없음, 가격 경쟁 압박 요인"
+   },
+   {
+    "name": "모크샤 EVA 폼롤러",
+    "positioning": "5만8천원대 중가 폼롤러",
+    "url": "",
+    "note": "온열 기능 없음"
+   },
+   {
+    "name": "무브먼트 폼롤러",
+    "positioning": "1만8천원대 초저가",
+    "url": "https://bodytech.co.kr/category/%ED%8F%BC%EB%A1%A4%EB%9F%AC/97/",
+    "note": "온열 기능 없음, 진입장벽 낮음을 시사"
+   },
+   {
+    "name": "광진산업 롤러 마사지기",
+    "positioning": "62만원대 고가 전동 롤러 마사지기",
+    "url": "https://prod.danawa.com/info/?pcode=88220000",
+    "note": "온열·진동 결합 고가 제품군과 간접 경쟁"
+   },
+   {
+    "name": "멜킨 발마사지기(공기압 온열)",
+    "positioning": "10만원대 온열 마사지 기구",
+    "url": "https://melkinsports.com/product/%EB%A9%9C%ED%82%A8-%EB%B0%9C%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0-%EA%B3%B5%EA%B8%B0%EC%95%95-%EB%B0%9C%EB%B0%94%EB%8B%A5-%ED%95%98%EB%A3%A8-%EC%98%A8%EC%97%B4-%EB%B0%9C-%EC%95%88%EB%A7%88%EA%B8%B0-%EA%B8%B0%EA%B3%84/1571",
+    "note": "온열 기능 결합 선례 존재, 차별점 희석"
+   }
+  ],
+  "trends": [
+   "회복(recovery)이 운동 루틴의 연속 단계로 인식되며 온열 기반 회복 제품 수요가 늘고 있다.",
+   "온열·냉찜질 하이브리드 제품이 스포츠·물리치료 분야에서 전년 대비 29% 증가해 온열 단일 기능보다 복합 기능 선호가 커지는 추세다.",
+   "온열 마사지 기구의 저온화상 안전사고가 반복 보도되며 온도 제어와 안전 표시 규제 압력이 커지고 있다."
+  ]
+ },
+ "roi": {
+  "scores": {
+   "profitability": {
+    "rubric_ref": "profitability:9-10",
+    "score": 9,
+    "rationale": "일반 폼롤러 대비 3~4배 판매가를 책정해 기여이익률은 확보되나, 저온화상 안전사고 이슈로 반품률·A/S 비용이 표의 기본값보다 높을 가능성이 있어 보수적으로 본다. 초기투자 규모 대비 회수 기간은 기본 시나리오에서 12개월 내 빠듯하게 가능한 수준으로 추정한다. (계산된 기여이익률 67%·BEP 비율 21%에 맞춰 5→9점으로 조정)"
+   }
+  },
+  "summary": "손익분기는 월 75개, 기본 시나리오 12개월 누적 손익은 9,711만원이다. 판매가는 경쟁 온열 마사지기(84,800~620,990원)와 일반 폼롤러(18,000~58,000원) 사이에서 온열 기능 프리미엄을 반영해 69,000원으로 잡았고, 원가율은 표의 base 33%, 채널은 온라인 70%(쿠팡 수수료 8% 가정)·오프라인 30%를 전제한다. 초기 자본 3,000~5,000만원 가정 대비 업종 표 기준 총 초기투자가 base 값 기준 약 2,330만원으로 자본 범위 내에 들어오나, 인증·안전설계 보강 시 high값 적용 시 4,350만원까지 늘어날 수 있어 자본 상단에 근접한다.",
+  "initial_investment": [
+   {
+    "item": "샘플·설계 검증",
+    "amount": {
+     "value": 200,
+     "unit": "만원",
+     "source_url": "",
+     "confidence": "estimated"
+    }
+   },
+   {
+    "item": "초도 물량 매입",
+    "amount": {
+     "value": 900,
+     "unit": "만원",
+     "source_url": "",
+     "confidence": "estimated"
+    }
+   },
+   {
+    "item": "KC 등 인증",
+    "amount": {
+     "value": 300,
+     "unit": "만원",
+     "source_url": "https://www.emergobyul.com/services/medical-device-registration-and-approval-south-korea",
+     "confidence": "sourced"
+    }
+   },
+   {
+    "item": "패키지·촬영·상세페이지",
+    "amount": {
+     "value": 250,
+     "unit": "만원",
+     "source_url": "",
+     "confidence": "estimated"
+    }
+   },
+   {
+    "item": "초기 마케팅",
+    "amount": {
+     "value": 600,
+     "unit": "만원",
+     "source_url": "",
+     "confidence": "estimated"
+    }
+   },
+   {
+    "item": "사업자·통관·기타",
+    "amount": {
+     "value": 80,
+     "unit": "만원",
+     "source_url": "",
+     "confidence": "estimated"
+    }
+   }
+  ],
+  "total_initial_investment": {
+   "value": 2330,
+   "unit": "만원",
+   "source_url": "",
+   "confidence": "estimated",
+   "note": "항목 합계"
+  },
+  "fixed_cost_monthly": {
+   "value": 345,
+   "unit": "만원",
+   "source_url": "",
+   "confidence": "estimated"
+  },
+  "unit_economics": {
+   "price": {
+    "value": 69000,
+    "unit": "원",
+    "source_url": "https://prod.danawa.com/info/?pcode=88220000",
+    "confidence": "sourced"
+   },
+   "unit_cost": {
+    "value": 22770,
+    "unit": "원",
+    "source_url": "",
+    "confidence": "estimated"
+   },
+   "variable_cost": {
+    "value": 0,
+    "unit": "원",
+    "source_url": "",
+    "confidence": "estimated"
+   },
+   "contribution_margin": {
+    "value": 46230,
+    "unit": "원",
+    "source_url": "",
+    "confidence": "estimated",
+    "note": "계산값"
+   }
+  },
+  "break_even": {
+   "units_per_month": {
+    "value": 75,
+    "unit": "개",
+    "source_url": "",
+    "confidence": "estimated",
+    "note": "월 고정비 ÷ 개당 기여이익"
+   },
+   "payback_months": {
+    "value": 1.8,
+    "unit": "개월",
+    "source_url": "",
+    "confidence": "estimated",
+    "note": "총 초기투자 ÷ 정상 궤도 월 순이익"
+   }
+  },
+  "scenarios": {
+   "conservative": {
+    "monthly_units": {
+     "value": 175,
+     "unit": "개",
+     "source_url": "",
+     "confidence": "estimated",
+     "note": "기본 시나리오 × 0.5"
+    },
+    "cumulative_profit_12m": {
+     "value": 1620,
+     "unit": "만원",
+     "source_url": "",
+     "confidence": "estimated",
+     "note": "12개월 누적 손익(초기투자 포함, 세전)"
+    },
+    "note": ""
+   },
+   "base": {
+    "monthly_units": {
+     "value": 350,
+     "unit": "개",
+     "source_url": "",
+     "confidence": "estimated"
+    },
+    "cumulative_profit_12m": {
+     "value": 9711,
+     "unit": "만원",
+     "source_url": "",
+     "confidence": "estimated",
+     "note": "12개월 누적 손익(초기투자 포함, 세전)"
+    },
+    "note": "폼롤러 시장 CAGR 10.2%와 온열 복합 회복제품 트렌드(하이브리드 찜질팩 전년비 29% 증가)를 근거로, 온라인 채널 중심 소규모 브랜드가 초기 월 300~400개 판매를 목표로 하는 것이 현실적이라 350개로 추정."
+   },
+   "optimistic": {
+    "monthly_units": {
+     "value": 630,
+     "unit": "개",
+     "source_url": "",
+     "confidence": "estimated",
+     "note": "기본 시나리오 × 1.8"
+    },
+    "cumulative_profit_12m": {
+     "value": 22655,
+     "unit": "만원",
+     "source_url": "",
+     "confidence": "estimated",
+     "note": "12개월 누적 손익(초기투자 포함, 세전)"
+    },
+    "note": ""
+   }
+  },
+  "_derived": {
+   "margin_rate": 0.67,
+   "bep_ratio": 0.214,
+   "monthly_profit_manwon": 1273.1
+  }
+ },
+ "feasibility": {
+  "scores": {
+   "execution": {
+    "rubric_ref": "execution:5-6",
+    "score": 5,
+    "rationale": "OEM(위탁생산) 조달과 전자 발열체 결합 구조로 3~6개월 내 출시가 가능하나, 발열 기능으로 인해 KC 전기용품 인증이 필수이고 의료 효능을 표방할 경우 의료기기 인증까지 추가되어 단순 폼롤러 대비 일정이 늘어난다. 저가 OEM 실리콘·발포 소재 조달 자체는 용이하나 온도제어 회로·안전 설계는 별도 전문 인력 또는 외주 설계가 필요하다."
+   },
+   "risk": {
+    "rubric_ref": "risk:3-4",
+    "score": 3,
+    "rationale": "발열 기능이 인체 피부에 직접 닿는 제품으로 저온화상 등 안전사고 사례가 동일 카테고리(온열 마사지기)에서 다수 확인되어 인명·법적 책임 리스크가 크다. 재고 기반 하드웨어 판매이며 해외 OEM 단일 공급처 의존 구조까지 겹쳐 통제 난이도가 높다."
+   }
+  },
+  "summary": "창업자 1~3인이 OEM 수입 모델로 3~6개월 내 론칭은 가능하나, 발열체 탑재로 인증 절차와 안전설계 부담이 일반 폼롤러보다 크다. 온열 마사지기 카테고리에서 저온화상 사고 사례가 반복 확인되어 설계·표시 단계의 리스크 관리가 핵심 과제다.",
+  "tech": {
+   "level": "중",
+   "summary": "온도제어 회로와 발열체 안전 설계가 필요해 단순 폼롤러보다 기술 난이도가 높다.",
+   "detail": "실리콘 롤러 자체는 알리바바 등에서 저가 OEM 조달이 가능하나(대당 약 USD 3.5, 완제품 발열체 결합 기준 아님), 안전 온도 제한·과열 차단 회로는 별도 설계·검증이 필요하다.",
+   "lead_time_weeks": {
+    "value": 12,
+    "unit": "주",
+    "source_url": "",
+    "confidence": "estimated"
+   }
+  },
+  "capital": {
+   "level": "중",
+   "summary": "초기 자본 3,000~5,000만원 가정은 OEM 수입 모델에서는 적정하나 인증·금형 비용을 고려하면 여유가 크지 않다.",
+   "detail": "중국 OEM 활용 시 인건비가 국내 대비 1/3 수준으로 원가 절감이 가능하지만, KC 인증과 의료기기 검토 비용·기간이 추가되면 초기 자본의 상당 부분이 인증·재고에 묶인다.",
+   "lead_time_weeks": {
+    "value": 8,
+    "unit": "주",
+    "source_url": "",
+    "confidence": "estimated"
+   }
+  },
+  "people": {
+   "level": "중",
+   "summary": "소규모 팀으로 수입·유통은 가능하나 전기안전·품질관리 전문성이 부족하면 인증 단계에서 병목이 발생한다.",
+   "detail": "OEM 위탁 생산 구조라 제조 인력은 불필요하지만, KC 인증 서류 준비, 품질 검수, 안전 표시 설계를 담당할 최소 1인의 전문 지식이 필요하다.",
+   "lead_time_weeks": {
+    "value": 6,
+    "unit": "주",
+    "source_url": "",
+    "confidence": "estimated"
+   }
+  },
+  "regulation": {
+   "level": "상",
+   "summary": "발열 기능이 있는 전자제품으로 KC 인증이 필수이며, 의료 효능을 표방할 경우 의료기기 인증까지 요구되어 규제 부담이 크다.",
+   "detail": "1등급 의료기기는 신고, 2등급은 인증, 3~4등급은 허가 대상이며 기술문서 심사 불필요 시 10일 이내, 심사 필요 시 65일 이내 소요가 확인된다. 다만 KC 전기용품 인증 소요 기간은 검색 결과에 없어 확인 필요이며, 전기 발열 제품이라는 특성상 보수적으로 '상'으로 판정한다.",
+   "lead_time_weeks": {
+    "value": 10,
+    "unit": "주",
+    "source_url": "https://www.daeryunlaw-medical.com/lawInfo_new/8906",
+    "confidence": "sourced"
+   }
+  }
+ },
+ "critique": {
+  "objections": [
+   {
+    "angle": "이미 존재한다",
+    "claim": "온열 마사지 기능과 폼롤러는 이미 시장에 분리된 형태로 존재하며, 결합 제품의 차별성이 제한적이다. 검색 결과에서 광진산업 롤러 마사지기(62만원대 전동 롤러), 멜킨 발마사지기(10만원대 온열 공기압)가 온열 마사지 기능을 제공하고 있으며, 일반 폼롤러(1.8~5.8만원)는 이미 광범위하게 보급되어 있다.",
+    "evidence": "경쟁사 분석에서 광진산업 롤러 마사지기(620,990원), 멜킨 발마사지기(100,000원) 등 온열 마사지 제품이 이미 판매 중이고, 트라택·모크샤·무브먼트 등 저가 폼롤러도 광범위하게 존재한다.",
+    "evidence_url": "https://www.themarketintelligence.com/market-reports/foam-roller-market-1015"
+   },
+   {
+    "angle": "숨은 비용",
+    "claim": "재무 분석이 발열 제품의 안전 규제 비용을 과소평가했다. 저온화상 사고 반복 보도로 인해 설계 강화, 추가 안전 테스트, 법적 책임보험, 리콜 대비 재고 적립금이 필요하나 초기투자 항목에 명시되지 않았다.",
+    "evidence": "검색 결과에서 온열 마사지기의 저온화상 사고가 반복 보도되었고, 조사 대상 10개 제품 모두 안전사고 주의 표시가 없거나 미흡했으며, 피부 괴사 수술·줄기세포 주사 등 심각한 피해 사례가 확인되었다. 또한 풀리오는 2024년 중반 온도를 평균 8℃ 낮추는 개선 조치를 시행했으나, 이는 제품 재설계 비용을 의미한다.",
+    "evidence_url": "https://www.seoul.co.kr/news/economy/2025/01/24/20250124500052"
+   },
+   {
+    "angle": "고객이 돈을 안 낸다",
+    "claim": "제안 가격 69,000원은 일반 폼롤러(1.8~5.8만원)와 온열 마사지기(8.5~62만원) 사이의 중간값이나, 고객이 온열 기능에 프리미엄을 지불할 동기가 약하다. 온열·냉찜질 하이브리드 제품이 스포츠·물리치료 분야에서 전년 대비 29% 증가하는 추세는 온열 단일 기능보다 복합 기능 선호를 시사하며, 저가 대체재(냉찜질 팩, 일반 폼롤러)의 접근성이 높다.",
+    "evidence": "검색 결과에서 온열·냉찜질 하이브리드 팩이 전년 대비 29% 증가했고, 온찜질 팩은 전 세계 사용량의 54%를 차지했으며, 2023년 구매자의 38%가 전자레인지 사용 가능 또는 냉동 가능 젤 팩을 선택했다. 또한 폼롤러 사용자 후기에서 '아플수록 효과 좋다'며 단단한 제품을 구매했다가 멍만 들고 사용 중단하는 사례가 다수 확인되어, 온열 기능이 추가된 고가 제품의 구매 의사가 낮을 수 있다.",
+    "evidence_url": "https://www.marketgrowthreports.com/ko/market-reports/hot-and-cold-therapy-packs-market-106044"
+   }
+  ],
+  "adjustments": [
+   {
+    "axis": "competition",
+    "delta": -1,
+    "reason": "온열 마사지 제품과 폼롤러가 이미 시장에 분리된 형태로 존재하며, 결합 제품의 신규성이 제한적이므로 경쟁 강도 평가(현재 3점)를 하향 조정할 근거가 있다.",
+    "evidence_url": "https://spofl.co.kr/category/%ED%8F%BC%EB%A1%A4%EB%9F%AC%EB%A7%88%EC%82%AC%EC%A7%80/175/"
+   },
+   {
+    "axis": "risk",
+    "delta": -1,
+    "reason": "저온화상 사고 반복 보도와 안전 표시 미흡 사례가 확인되었으며, 풀리오 등 기존 업체도 온도 하향 조정 등 설계 개선을 강행했으므로, 신규 진입자의 규제·안전 리스크가 현재 평가(3점)보다 높다.",
+    "evidence_url": "https://biz.heraldcorp.com/article/10621155"
+   }
+  ]
+ },
+ "roadmap": [
+  {
+   "stage": "1단계 검증",
+   "period": "0~4주",
+   "actions": [
+    "OEM 샘플 3종(발열 온도 40도·45도·50도)을 받아 자체 열화상 테스트로 저온화상 임계 온도(40~50도 장시간 접촉) 초과 여부를 확인한다",
+    "KC 전기용품 인증 소요 기간·비용을 인증기관에 직접 문의해 견적을 받고, 의료기기 분류 가능성(온열 효능 문구 사용 여부)을 전문 심사기관에 사전 질의한다",
+    "잠재 고객 30명 대상으로 69,000원 가격에 대한 구매 의향 및 온열 단일 기능 대비 냉온 복합 기능 선호도를 설문한다"
+   ],
+   "cost": {
+    "value": 300,
+    "unit": "만원",
+    "source_url": "",
+    "confidence": "estimated"
+   },
+   "gate_condition": "샘플 테스트에서 설정 온도가 45도 이하로 제어되고 과열 차단 기능이 확인되며, 설문 응답자의 30% 이상이 69,000원에 구매 의향을 표시해야 다음 단계로 진행한다"
+  },
+  {
+   "stage": "2단계 최소판매",
+   "period": "1~3개월",
+   "actions": [
+    "KC 인증을 완료한 초도 물량 100~150개를 발주하고 자체몰·쿠팡에 안전 사용법·저온화상 주의 표시를 상세페이지·패키지·제품 스티커에 3회 이상 반복 노출한다",
+    "피트니스센터 2~3곳에 샘플 납품 후 실사용 피드백(통증·화상·만족도)을 수집한다",
+    "초기 마케팅 예산으로 쿠팡 검색광고와 인플루언서 체험단을 운영해 월 75개(손익분기) 판매를 목표로 한다"
+   ],
+   "cost": {
+    "value": 1800,
+    "unit": "만원",
+    "source_url": "",
+    "confidence": "estimated"
+   },
+   "gate_condition": "3개월 누적 판매 225개 이상(월평균 75개 손익분기 충족) 달성, 저온화상·안전사고 신고 건수 0건 유지해야 다음 단계로 진행한다"
+  },
+  {
+   "stage": "3단계 확장",
+   "period": "3~12개월",
+   "actions": [
+    "무신사·오프라인 스포츠용품점으로 채널을 확대하고 월 판매량을 기본 시나리오(350개) 수준으로 끌어올린다",
+    "안전사고 발생 시 즉시 대응 가능한 리콜 프로세스와 법적 책임보험을 가입한다",
+    "동남아·일본向 수출 가능성을 타진하되 현지 전기·의료기기 규제를 사전 확인한다"
+   ],
+   "cost": {
+    "value": 2500,
+    "unit": "만원",
+    "source_url": "",
+    "confidence": "estimated"
+   },
+   "gate_condition": "12개월 누적 손익이 base 시나리오(9,711만원) 대비 70% 이상 달성하고, 반품률 5% 이하·안전사고 신고 0건을 유지해야 추가 투자를 집행한다"
+  }
+ ],
+ "sources": [
+  {
+   "title": "Foam Roller Market Size, Growth",
+   "url": "https://www.themarketintelligence.com/market-reports/foam-roller-market-1015",
+   "used_for": "비평 · 시장"
+  },
+  {
+   "title": "한국 의료기기 등록 및 승인",
+   "url": "https://www.emergobyul.com/services/medical-device-registration-and-approval-south-korea",
+   "used_for": "ROI"
+  },
+  {
+   "title": "의료기기인허가 절차 안내 및 필요 서류",
+   "url": "https://www.daeryunlaw-medical.com/lawInfo_new/8906",
+   "used_for": "실행가능성"
+  },
+  {
+   "title": "광진산업 롤러 마사지기 : 다나와 가격비교",
+   "url": "https://prod.danawa.com/info/?pcode=88220000",
+   "used_for": "ROI · 시장"
+  },
+  {
+   "title": "브랜드 - 폼롤러/마사지 - 스포플",
+   "url": "https://spofl.co.kr/category/%ED%8F%BC%EB%A1%A4%EB%9F%AC%EB%A7%88%EC%82%AC%EC%A7%80/175/",
+   "used_for": "비평 · 시장"
+  },
+  {
+   "title": "멜킨 발마사지기 공기압 발바닥 하루 온열 발 안마기 기계",
+   "url": "https://melkinsports.com/product/%EB%A9%9C%ED%82%A8-%EB%B0%9C%EB%A7%88%EC%82%AC%EC%A7%80%EA%B8%B0-%EA%B3%B5%EA%B8%B0%EC%95%95-%EB%B0%9C%EB%B0%94%EB%8B%A5-%ED%95%98%EB%A3%A8-%EC%98%A8%EC%97%B4-%EB%B0%9C-%EC%95%88%EB%A7%88%EA%B8%B0-%EA%B8%B0%EA%B3%84/1571",
+   "used_for": "시장"
+  },
+  {
+   "title": "마사지 - 폼롤러 - 바디테크",
+   "url": "https://bodytech.co.kr/category/%ED%8F%BC%EB%A1%A4%EB%9F%AC/97/",
+   "used_for": "시장"
+  },
+  {
+   "title": "온찜질 요법 팩 시장 규모, 점유율",
+   "url": "https://www.marketgrowthreports.com/ko/market-reports/hot-and-cold-therapy-packs-market-106044",
+   "used_for": "비평"
+  },
+  {
+   "title": "풀리오, 안전캠페인 전개… “마사지기 오사용으로 인한 물집, 저온화상 최소화”",
+   "url": "https://www.seoul.co.kr/news/economy/2025/01/24/20250124500052",
+   "used_for": "비평"
+  },
+  {
+   "title": "“앗 뜨거워”…소비자원, ‘다리 온열 마사지기’ 안전사고 주의 표시 권고 - 헤럴드경제",
+   "url": "https://biz.heraldcorp.com/article/10621155",
+   "used_for": "비평"
+  }
+ ],
+ "degraded_sections": [],
+ "meta": {
+  "weighted_average": 5.1,
+  "partial": false,
+  "applied_adjustments": [
+   {
+    "axis": "competition",
+    "from": 3,
+    "to": 2,
+    "reason": "온열 마사지 제품과 폼롤러가 이미 시장에 분리된 형태로 존재하며, 결합 제품의 신규성이 제한적이므로 경쟁 강도 평가(현재 3점)를 하향 조정할 근거가 있다.",
+    "evidence_url": "https://spofl.co.kr/category/%ED%8F%BC%EB%A1%A4%EB%9F%AC%EB%A7%88%EC%82%AC%EC%A7%80/175/"
+   },
+   {
+    "axis": "risk",
+    "from": 3,
+    "to": 2,
+    "reason": "저온화상 사고 반복 보도와 안전 표시 미흡 사례가 확인되었으며, 풀리오 등 기존 업체도 온도 하향 조정 등 설계 개선을 강행했으므로, 신규 진입자의 규제·안전 리스크가 현재 평가(3점)보다 높다.",
+    "evidence_url": "https://biz.heraldcorp.com/article/10621155"
+   }
+  ],
+  "queries_run": [
+   "폼롤러 시장 규모 성장률 2024",
+   "온열 폼롤러 OEM 제조 원가 중국",
+   "폼롤러 의료기기 인증 규제 한국",
+   "쿠팡 무신사 판매 수수료 광고비",
+   "온열 마사지기 폼롤러 경쟁 제품 가격",
+   "근육 회복 온열 제품 소비자 트렌드",
+   "온열 마사지 기구 실패 사례",
+   "폼롤러 사용자 후기 불만점"
+  ],
+  "schema_errors": [],
+  "draft_grade": "C",
+  "search": {
+   "urls": 75,
+   "failed_queries": []
+  }
+ }
+}
