@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사업아이템 분석기</title>
+<meta name="description" content="한 줄 아이디어를 투자 심사역의 시선으로 분석합니다. 시장·수익·실행·리스크를 조사하고 스스로 반박까지 한 리포트를 약 2분 안에 만들어 드려요.">
+<meta name="theme-color" content="#f7f5f2">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233346d3'/%3E%3Cpath d='M16 6l9.5 6.9-3.6 11.2H10.1L6.5 12.9z' fill='none' stroke='%23fff' stroke-width='2' stroke-linejoin='round'/%3E%3Cpath d='M16 12l4.8 3.5-1.8 5.6h-6l-1.8-5.6z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  /* ============ 디자인 토큰 ============
+     중립 톤 + 강조 1색(인디고). 등급에 초록/빨강을 쓰지 않는다.
+     따뜻한 종이 배경 = 친근함, 진한 잉크 + 촘촘한 표 = 전문성. */
+  :root{
+    --bg:#f7f5f2; --panel:#ffffff; --panel-2:#faf8f5; --ink:#1a2233; --muted:#5b6472;
+    --line:#e6e2dc; --line-2:#efece7;
+    --accent:#3346d3; --accent-ink:#ffffff; --accent-soft:rgba(51,70,211,.10); --accent-line:rgba(51,70,211,.35);
+    --neg:#b45309; --neg-soft:rgba(180,83,9,.10);
+    --inv-bg:#1a2233; --inv-panel:#242d42; --inv-ink:#f3f4f7; --inv-muted:#b4bccb; --inv-line:#36415a; --inv-link:#9db0ff;
+    --shadow:0 1px 2px rgba(26,34,51,.05),0 6px 20px rgba(26,34,51,.05);
+    --radius:16px; --radius-sm:10px;
+    --cw:176px; --ch:150px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f141c; --panel:#171e29; --panel-2:#1c2431; --ink:#e8ecf3; --muted:#9aa4b2;
+      --line:#283242; --line-2:#212a38;
+      --accent:#93a4ff; --accent-ink:#0f141c; --accent-soft:rgba(147,164,255,.13); --accent-line:rgba(147,164,255,.4);
+      --neg:#fb923c; --neg-soft:rgba(251,146,60,.13);
+      --inv-bg:#e8ecf3; --inv-panel:#f7f8fb; --inv-ink:#1a2233; --inv-muted:#4b5563; --inv-line:#d5dae4; --inv-link:#3346d3;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:72px}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Pretendard Variable",Pretendard,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+    font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+  h1,h2,h3,p{margin:0}
+  h1,h2,h3{letter-spacing:-.025em;line-height:1.3}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  .hidden{display:none !important}
+  .mono{font-variant-numeric:tabular-nums}
+  a{color:var(--accent)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+  button{font-family:inherit}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+  /* ---------- 공통 버튼 ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;font-size:16px;font-weight:700;
+    border:0;border-radius:12px;background:var(--accent);color:var(--accent-ink);cursor:pointer;transition:transform .12s,filter .12s;white-space:nowrap}
+  .btn:hover{filter:brightness(1.08)} .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;padding:9px 16px;font-size:14px;border-radius:10px}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
+  .btn.sm{padding:9px 16px;font-size:14px;border-radius:10px}
+
+  /* ---------- 상단바 ---------- */
+  /* backdrop-filter는 일부 브라우저에서 스크롤 시 화면이 그려지지 않는 문제가 있어 쓰지 않는다. */
+  .topbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line-2)}
+  .topbar .in{display:flex;align-items:center;gap:18px;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:-.03em;color:var(--ink);text-decoration:none;cursor:pointer;background:none;border:0;padding:0}
+  .brand svg{width:28px;height:28px;flex:none}
+  .nav{display:flex;gap:2px;margin-left:12px;overflow-x:auto;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav a{padding:6px 11px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--muted);text-decoration:none;white-space:nowrap}
+  .nav a:hover{color:var(--ink);background:var(--line-2)}
+  .nav a.on{color:var(--accent);background:var(--accent-soft)}
+  .topbar .sp{flex:1}
+  .tag-sample{font-size:11.5px;font-weight:700;color:var(--accent);border:1px solid var(--accent-line);border-radius:999px;padding:2px 9px}
+
+  /* ---------- 1. 랜딩 ---------- */
+  .land-hero{padding:72px 0 30px;text-align:center}
+  .pill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--accent);background:var(--accent-soft);
+    padding:6px 14px;border-radius:999px}
+  .land-hero h1{font-size:clamp(30px,5.2vw,48px);font-weight:800;margin:20px 0 14px;letter-spacing:-.04em}
+  .land-hero h1 em{font-style:normal;color:var(--accent)}
+  .land-hero p.sub{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:600px;margin:0 auto}
+  .ask{max-width:660px;margin:34px auto 0;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:10px;
+    box-shadow:var(--shadow);display:flex;gap:10px}
+  .ask input{flex:1;min-width:0;border:0;background:transparent;font-size:18px;padding:12px 14px;color:var(--ink);font-family:inherit}
+  .ask input::placeholder{color:#8b93a1}
+  .ask input:focus{outline:none}
+  .ask:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft),var(--shadow)}
+  .invite{max-width:660px;margin:12px auto 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;font-size:13.5px}
+  .invite label{font-weight:700;color:var(--muted)}
+  .invite input{width:210px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);
+    font-family:inherit;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+  .invite input::placeholder{letter-spacing:0;text-transform:none;color:#8b93a1}
+  .invite input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  .invite .note{color:var(--muted);min-width:120px;text-align:left}
+  .invite .note.ok{color:var(--accent);font-weight:700}
+  .invite .note.bad{color:var(--neg);font-weight:700}
+  .err{max-width:660px;margin:12px auto 0;min-height:22px;text-align:left;font-size:14px;color:var(--neg);font-weight:600;padding:0 6px}
+  .examples{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px;align-items:center}
+  .examples .lead{font-size:13px;color:var(--muted);margin-right:2px}
+  .chip{padding:8px 15px;border:1px solid var(--line);border-radius:999px;background:var(--panel);cursor:pointer;font-size:14px;color:var(--ink);font-weight:500}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .meta-line{margin-top:20px;font-size:13px;color:var(--muted)}
+  .meta-line a{font-weight:700;text-decoration:none;border-bottom:1px solid var(--accent-line)}
+
+  .how{padding:54px 0 10px}
+  .how h2,.trust h2{font-size:24px;text-align:center;margin-bottom:8px}
+  .how .lead,.trust .lead{text-align:center;color:var(--muted);margin-bottom:28px}
+  .crew{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .crew .c{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .crew .step{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.04em}
+  .crew h3{font-size:17px;margin:6px 0 8px}
+  .crew p{font-size:14px;color:var(--muted)}
+  .faces{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+  .face{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;padding:4px 10px 4px 5px}
+  .face i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;font-size:12px}
+  .trust{padding:54px 0 30px}
+  .trust .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .trust .t{padding:22px;border-radius:var(--radius);background:var(--panel-2);border:1px solid var(--line-2)}
+  .trust .ic{width:38px;height:38px;border-radius:11px;background:var(--accent-soft);display:grid;place-items:center;font-size:19px;margin-bottom:12px}
+  .trust h3{font-size:16px;margin-bottom:6px}
+  .trust p{font-size:14px;color:var(--muted)}
+  .est-demo{display:inline;border-bottom:1px dashed var(--muted);color:var(--muted)}
+  .land-foot{padding:26px 0 60px;text-align:center;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line-2);margin-top:26px}
+
+  /* ---------- 2. 진행 ---------- */
+  #view-progress{padding:54px 0 70px;text-align:center}
+  #view-progress h2{font-size:clamp(20px,3vw,26px);font-weight:800}
+  #view-progress .sub{color:var(--muted);margin-top:8px;font-size:14.5px}
+  .meter{max-width:420px;margin:22px auto 0}
+  .meter .bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+  .meter .bar i{display:block;height:100%;width:0;border-radius:99px;background:var(--accent);transition:width .6s ease}
+  .meter .cap{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-top:7px}
+  .tip{max-width:520px;margin:26px auto 0;padding:12px 18px;border-radius:12px;background:var(--panel-2);border:1px solid var(--line-2);font-size:13.5px;color:var(--muted);min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px}
+
+  /* 카드 규격 고정(--cw × --ch, 그리드 좌표). 캐릭터 이미지로 교체해도 배치가 유지된다. */
+  .flow{position:relative;margin:34px auto 0;width:calc(var(--cw)*3 + 80px);height:calc(var(--ch)*4 + 78px)}
+  .flow svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .flow svg path{fill:none;stroke:var(--line);stroke-width:2;stroke-dasharray:4 5}
+  .card{position:absolute;width:var(--cw);height:var(--ch);background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);
+    padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:opacity .3s,border-color .3s,box-shadow .3s;opacity:.55}
+  .card .avatar{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:var(--accent-soft);border:2px solid transparent}
+  .card .nm{font-weight:800;font-size:14.5px}
+  .card .st{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .card .note{font-size:12px;color:var(--muted);line-height:1.4;min-height:34px;padding:0 4px}
+  .card[data-status=working]{opacity:1;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+  .card[data-status=working] .avatar{border-color:var(--accent);animation:bob 1.2s ease-in-out infinite}
+  .card[data-status=working] .st{color:var(--accent)}
+  .card[data-status=done]{opacity:1}
+  .card[data-status=done] .avatar{border-color:var(--accent);background:var(--accent);filter:none}
+  .card[data-status=done] .st{color:var(--ink)}
+  .card[data-status=failed]{opacity:.7;border-style:dashed}
+  .card[data-status=failed] .avatar{filter:grayscale(1);background:var(--line-2)}
+  .card[data-status=failed] .st,.card[data-status=failed] .note{color:var(--neg)}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @media (prefers-reduced-motion:reduce){.card .avatar{animation:none !important} html{scroll-behavior:auto}}
+
+  /* ---------- 3. 리포트 ---------- */
+  #view-report{padding:26px 0 70px}
+  section.sec{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:30px 32px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .sec-head{display:flex;align-items:center;gap:11px;margin-bottom:20px}
+  .sec-head .ico{width:34px;height:34px;border-radius:10px;background:var(--accent-soft);display:grid;place-items:center;font-size:17px;flex:none}
+  .sec-head h2{font-size:19px}
+  .sec-head .by{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+  .concl{margin-bottom:18px;font-size:15.5px;font-weight:500}
+
+  .hero{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:38px 36px 30px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .hero .eyebrow{font-size:12.5px;font-weight:800;color:var(--accent);letter-spacing:.06em}
+  .hero .idea{font-size:clamp(26px,4vw,34px);font-weight:800;letter-spacing:-.035em;margin-top:6px}
+  .hero .prod{color:var(--muted);font-size:14.5px;margin-top:6px}
+  .verdict{display:flex;align-items:center;gap:26px;margin-top:28px}
+  .grade{width:112px;height:112px;border-radius:24px;background:var(--accent-soft);border:2px solid var(--accent);color:var(--accent);
+    display:grid;place-items:center;font-size:46px;font-weight:800;letter-spacing:-.04em;flex:none}
+  .verdict .dec{font-size:13.5px;font-weight:800;color:var(--accent)}
+  .verdict .one{font-size:clamp(17px,2.4vw,22px);font-weight:700;margin-top:4px;line-height:1.5;letter-spacing:-.02em}
+  .legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:22px;font-size:12px;color:var(--muted);align-items:center}
+  .legend .lg{padding:3px 10px;border-radius:999px;border:1px solid var(--line)}
+  .legend .lg.on{color:var(--accent);border-color:var(--accent);font-weight:800;background:var(--accent-soft)}
+  .assume{margin-top:22px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:0 12px 12px 0;padding:16px 20px;background:var(--panel-2)}
+  .assume b.h{font-size:13.5px}
+  .assume .s{font-size:12.5px;color:var(--muted);margin-top:1px}
+  .assume ul{margin:10px 0 0;padding-left:18px;font-size:14px}
+  .assume li{margin:3px 0}
+
+  .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+  .fact{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
+  .fact .k{font-size:12.5px;font-weight:700;color:var(--muted)}
+  .fact .v{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.03em;margin-top:4px;line-height:1.25}
+  .fact .n{font-size:12px;color:var(--muted);margin-top:4px}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .tile{border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px;background:var(--panel-2)}
+  .tile .k{font-size:12.5px;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tile .v{font-size:14.5px;margin-top:7px}
+  .kpi .v{font-size:25px;font-weight:800;letter-spacing:-.03em;line-height:1.3}
+  .alt{color:var(--muted);font-size:13px;margin-top:16px}
+
+  /* 추정치 = 회색 + 점선 */
+  .est{color:var(--muted);border-bottom:1px dashed var(--muted)}
+  .badge-est{display:inline-block;margin-left:6px;padding:1px 7px;border:1px dashed var(--muted);border-radius:5px;font-size:10.5px;font-weight:600;color:var(--muted);vertical-align:2px;white-space:nowrap;letter-spacing:0;font-style:normal}
+  a.src{font-size:11.5px;margin-left:6px;white-space:nowrap;font-weight:600;text-decoration:none;border-bottom:1px solid var(--accent-line)}
+
+  /* 점수 */
+  .scores{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:30px;align-items:center}
+  .radar-box{position:relative;width:100%;max-width:340px;aspect-ratio:1;margin:0 auto}
+  .rl{display:flex;gap:16px;justify-content:center;font-size:12px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+  .rl span{display:inline-flex;align-items:center;gap:6px}
+  .rl i{display:inline-block;width:18px;height:0;border-top:2.5px solid var(--accent)}
+  .rl i.dash{border-top:2px dashed var(--muted)}
+  .axis{display:block;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:12px;padding:10px 12px;cursor:pointer;color:inherit;font-size:inherit}
+  .axis:hover{background:var(--panel-2);border-color:var(--line)}
+  .axis .top{display:flex;align-items:center;gap:12px}
+  .axis .nm{width:54px;font-weight:700;font-size:14.5px;flex:none}
+  .axis .trk{flex:1;height:8px;border-radius:4px;background:var(--line-2);overflow:hidden}
+  .axis .trk i{display:block;height:100%;background:var(--accent);border-radius:0 4px 4px 0}
+  .axis .val{width:46px;text-align:right;font-weight:800;font-size:14.5px;flex:none}
+  .axis .adj{font-size:11.5px;color:var(--neg);font-weight:700;width:44px;flex:none}
+  .axis .hint{font-size:11.5px;color:var(--muted);padding-left:66px;margin-top:1px}
+  .axis .why{display:none;font-size:13.5px;margin-top:8px;padding:10px 12px 2px 66px;color:var(--ink)}
+  .axis[aria-expanded=true] .why{display:block}
+  .axis[aria-expanded=true] .hint{display:none}
+  .axis .why small{display:block;color:var(--muted);font-size:11.5px;margin-top:6px}
+
+  .tscroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+  th{font-size:12px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--line)}
+  td.num,th.num{text-align:right;white-space:nowrap}
+  tr.total td{font-weight:800;border-top:2px solid var(--ink);border-bottom:0}
+
+  .bep{text-align:center;padding:30px 12px 26px;margin:24px 0;border-radius:var(--radius);background:var(--accent-soft);border:1px solid var(--accent-line)}
+  .bep .lbl{font-size:13px;color:var(--muted);font-weight:700}
+  .bep .big{font-size:clamp(44px,8vw,68px);font-weight:800;letter-spacing:-.05em;line-height:1.1;margin-top:4px;color:var(--accent)}
+  .bep .sub{font-size:13px;color:var(--muted);margin-top:8px}
+
+  /* 12개월 시나리오: 0을 기준으로 좌(손실)/우(이익) 발산 막대 */
+  .scen{margin-top:6px}
+  .scen .row{display:grid;grid-template-columns:64px 1fr 116px;gap:14px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-2)}
+  .scen .row:last-child{border-bottom:0}
+  .scen .lb{font-weight:700;font-size:14px}
+  .scen .lb small{display:block;font-weight:500;color:var(--muted);font-size:11.5px}
+  .scen .dv{position:relative;height:22px}
+  .scen .dv::before{content:"";position:absolute;left:var(--zero);top:-4px;bottom:-4px;border-left:1.5px solid var(--muted);opacity:.6}
+  .scen .dv i{position:absolute;top:4px;height:14px;border-radius:3px}
+  .scen .dv i.pos{left:var(--zero);background:var(--accent);border-radius:0 5px 5px 0}
+  .scen .dv i.neg{background:var(--neg);border-radius:5px 0 0 5px}
+  .scen .amt{text-align:right;font-weight:800;font-size:14.5px;white-space:nowrap}
+  .scen .amt.neg{color:var(--neg)}
+  .scen-note{font-size:12px;color:var(--muted);margin-top:8px}
+
+  .lv{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:800;border:1px solid var(--line)}
+  .lv.상{color:var(--neg);background:var(--neg-soft);border-color:transparent}
+  .lv.중{color:var(--muted);background:var(--line-2);border-color:transparent}
+  .lv.하{color:var(--accent);background:var(--accent-soft);border-color:transparent}
+  .fnote{font-size:12px;color:var(--muted);margin-top:14px}
+
+  /* 비평 블록: 배경 반전 */
+  section.inv{background:var(--inv-bg);color:var(--inv-ink);border-color:var(--inv-bg)}
+  section.inv .sec-head .ico{background:rgba(255,255,255,.12)}
+  section.inv .sec-head .by{color:var(--inv-muted)}
+  section.inv .concl{color:var(--inv-muted);font-weight:500}
+  section.inv .obj{border:1px solid var(--inv-line);border-radius:var(--radius-sm);padding:16px 20px;margin-bottom:11px;background:var(--inv-panel);color:var(--inv-ink)}
+  section.inv .angle{font-size:12px;font-weight:800;color:var(--inv-muted);letter-spacing:.03em}
+  section.inv .claim{margin-top:6px;font-weight:600;font-size:15px}
+  section.inv .ev{font-size:13px;color:var(--inv-muted);margin-top:8px}
+  section.inv a{color:var(--inv-link)}
+  section.inv .applied{border-top:1px solid var(--inv-line);margin-top:18px;padding-top:16px;font-size:14.5px}
+  section.inv .applied small{display:block;font-size:12px;color:var(--inv-muted);margin-top:6px}
+
+  /* 로드맵 */
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;position:relative}
+  .stage{border:1px solid var(--line);border-radius:var(--radius-sm);padding:20px;background:var(--panel-2);position:relative}
+  .stage .no{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800;font-size:13px;margin-bottom:10px}
+  .stage .st{font-weight:800;font-size:16px}
+  .stage .pd{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .stage ul{margin:12px 0 0;padding-left:18px;font-size:13.5px}
+  .stage li{margin:6px 0}
+  .stage .gate{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px}
+  .stage .gate b{display:block;font-size:11.5px;color:var(--accent);margin-bottom:2px}
+
+  .degraded{border:1.5px dashed var(--muted);border-radius:12px;padding:20px;color:var(--muted);font-size:14px;text-align:center;background:var(--panel-2)}
+
+  footer.rf{margin-top:8px;padding:26px 32px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+  footer.rf details summary{cursor:pointer;font-weight:800;font-size:14px}
+  footer.rf ol{font-size:13px;color:var(--muted);padding-left:20px;margin:12px 0 0}
+  footer.rf li{margin:4px 0}
+  .cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+  .cta .sp{flex:1}
+  .disc{font-size:12.5px;color:var(--muted);margin-top:16px}
+
+  .sample-banner{margin:0 0 16px;padding:14px 18px;border-radius:12px;background:var(--accent-soft);border:1px solid var(--accent-line);display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:14px}
+  .sample-banner .sp{flex:1}
+
+  /* ---------- 모바일 ---------- */
+  @media (max-width:820px){
+    .wrap{padding:0 16px}
+    section.sec{padding:22px 18px}
+    .hero{padding:26px 20px 22px}
+    .grade{width:88px;height:88px;font-size:36px;border-radius:20px}
+    .verdict{gap:16px}
+    .facts,.grid3,.crew,.trust .grid,.road{grid-template-columns:1fr}
+    .grid4{grid-template-columns:1fr 1fr}
+    .scores{grid-template-columns:1fr}
+    .nav{display:none}
+    .land-hero{padding:44px 0 20px}
+    .ask{flex-direction:column;border-radius:18px}
+    .ask .btn{width:100%}
+    .scen .row{grid-template-columns:52px 1fr;gap:6px 10px}
+    .scen .amt{grid-column:1 / -1;text-align:left;padding-left:62px}
+    .sec-head .by{display:none}
+    div.two{grid-template-columns:1fr !important}
+  }
+  /* 진행 화면: 좁은 화면에서는 세로 목록(연결선 숨김) */
+  @media (max-width:680px){
+    .flow{width:100%;height:auto;display:flex;flex-direction:column;gap:10px}
+    .flow svg{display:none}
+    .card{position:static;width:100%;height:auto;flex-direction:row;justify-content:flex-start;text-align:left;gap:14px;padding:12px 16px}
+    .card .body{flex:1}
+    .card .note{min-height:0;padding:0}
+  }
+  @media (max-width:420px){ .grid4{grid-template-columns:1fr} }
+
+  /* ---------- 인쇄 / PDF 저장 ---------- */
+  @media print{
+    :root{--bg:#fff;--shadow:none}
+    body{background:#fff}
+    .topbar,.no-print,.sample-banner button,.cta .btn{display:none !important}
+    section.sec,.hero,.fact{box-shadow:none;break-inside:avoid}
+    html{scroll-behavior:auto}
+    @page{margin:14mm}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 상단바 ============ -->
+<header class="topbar no-print">
+  <div class="wrap in">
+    <button class="brand" id="brand" aria-label="처음 화면으로">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--accent)"/><path d="M16 6l9.5 6.9-3.6 11.2H10.1L6.5 12.9z" fill="none" stroke="var(--accent-ink)" stroke-width="2" stroke-linejoin="round"/><path d="M16 12l4.8 3.5-1.8 5.6h-6l-1.8-5.6z" fill="var(--accent-ink)"/></svg>
+      사업아이템 분석기
+    </button>
+    <nav class="nav hidden" id="nav" aria-label="리포트 목차"></nav>
+    <div class="sp"></div>
+    <span class="tag-sample hidden" id="tag-sample">샘플</span>
+    <button class="btn ghost hidden" id="bar-print">PDF로 저장</button>
+    <button class="btn ghost" id="bar-sample">샘플 리포트 보기</button>
+    <button class="btn sm hidden" id="bar-new">새 분석</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ 1. 랜딩 / 입력 ============ -->
+  <div id="view-input">
+    <div class="land-hero">
+      <span class="pill">🧭 투자 심사역의 시선으로</span>
+      <h1>떠오른 아이디어,<br><em>사업이 될까요?</em></h1>
+      <p class="sub">한 줄만 적어 주세요. 시장·수익·실행·리스크를 조사하고, 스스로 반박까지 해 본 리포트를 보통 2분 안팎에 만들어 드려요.</p>
+
+      <form class="ask" id="ask" autocomplete="off">
+        <label class="sr" for="idea">사업 아이디어 한 줄</label>
+        <input id="idea" type="text" placeholder="예: 따뜻한 폼롤러" maxlength="100" enterkeyhint="go">
+        <button class="btn" type="submit" id="go">분석 시작하기</button>
+      </form>
+      <div class="invite hidden" id="invite">
+        <label for="invite-code">초대 코드</label>
+        <input id="invite-code" type="text" placeholder="예: ABCD-EFGH-JKMN" autocomplete="off" spellcheck="false" maxlength="24">
+        <span class="note" id="invite-note">샘플 리포트는 코드 없이 볼 수 있어요.</span>
+      </div>
+      <div class="err" id="err" role="alert"></div>
+      <div class="examples" id="examples"><span class="lead">이런 아이디어로 시작해 보세요</span></div>
+      <p class="meta-line">먼저 결과가 궁금하다면 <a href="#" id="link-sample">샘플 리포트 보기</a> · 실제 분석 결과 예시예요</p>
+    </div>
+
+    <div class="how">
+      <h2>이렇게 만들어져요</h2>
+      <p class="lead">여섯 명의 전문가가 역할을 나눠 일하고, 마지막에는 서로의 결론을 의심해요.</p>
+      <div class="crew">
+        <div class="c"><div class="step">STEP 1</div><h3>한 줄을 구조로 풀어요</h3>
+          <p>아이디어를 제품·타깃·차별점으로 해석하고, 부족한 정보는 가정으로 채워 그 가정을 리포트 맨 위에 공개해요.</p>
+          <div class="faces"><span class="face"><i>🔍</i>해석가</span></div></div>
+        <div class="c"><div class="step">STEP 2</div><h3>세 명이 동시에 분석해요</h3>
+          <p>웹에서 근거를 모은 뒤 시장, 수익, 실행 가능성을 나눠서 동시에 살펴봐요.</p>
+          <div class="faces"><span class="face"><i>🔭</i>정찰병</span><span class="face"><i>🧮</i>회계사</span><span class="face"><i>🦺</i>현장반장</span></div></div>
+        <div class="c"><div class="step">STEP 3</div><h3>반박한 뒤 종합해요</h3>
+          <p>반대파가 결론의 약점을 3가지 각도로 공격하고, 심사위원이 근거가 확인된 반론만 반영해 등급을 매겨요.</p>
+          <div class="faces"><span class="face"><i>🔻</i>반대파</span><span class="face"><i>⚖️</i>심사위원</span></div></div>
+      </div>
+    </div>
+
+    <div class="trust">
+      <h2>믿고 볼 수 있게 만들었어요</h2>
+      <p class="lead">그럴듯한 숫자보다, 어디서 온 숫자인지가 더 중요하니까요.</p>
+      <div class="grid">
+        <div class="t"><div class="ic">🔗</div><h3>모든 숫자에 출처</h3>
+          <p>출처를 확인한 수치는 링크와 함께, 확인하지 못한 수치는 <span class="est-demo">회색 점선</span> <span class="badge-est">추정치</span> 배지로 구분해 보여줘요.</p></div>
+        <div class="t"><div class="ic">🛡️</div><h3>스스로 반박해요</h3>
+          <p>낙관에 빠지지 않도록 “이미 존재한다·숨은 비용·고객이 돈을 안 낸다” 세 가지 반론을 반드시 붙여요.</p></div>
+        <div class="t"><div class="ic">🪟</div><h3>가정을 숨기지 않아요</h3>
+          <p>초기 자본, 판매가, 판매 채널 같은 가정을 맨 위에 펼쳐 둬요. 내 상황과 다르면 결과도 달라진다는 걸 바로 알 수 있어요.</p></div>
+      </div>
+    </div>
+
+    <div class="land-foot">본 서비스의 리포트는 공개 웹 자료와 업종 표준값에 기반한 참고용 분석이며, 투자·창업 권유가 아닙니다.</div>
+  </div>
+
+  <!-- ============ 2. 진행 ============ -->
+  <div id="view-progress" class="hidden">
+    <h2 id="p-idea"></h2>
+    <p class="sub"><span id="p-elapsed">0</span>초 경과 · 보통 2분 안팎 걸려요. 창을 닫지 말고 잠시만 기다려 주세요.</p>
+    <div class="meter" aria-hidden="true"><div class="bar"><i id="meter-fill"></i></div>
+      <div class="cap"><span id="meter-txt">시작하는 중</span><span id="meter-n">0 / 6</span></div></div>
+    <div class="flow" id="flow"></div>
+    <div class="tip" id="tip"></div>
+  </div>
+
+  <!-- ============ 3. 리포트 ============ -->
+  <div id="view-report" class="hidden"></div>
+</main>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = v => Number(v).toLocaleString('ko-KR', {maximumFractionDigits: 1});
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const safeUrl = u => /^https?:\/\//i.test(u || '') ? u : '';
+let pollTimer = null, clockTimer = null, tipTimer = null, radar = null, spy = null;
+
+/* ---------- 숫자: 출처 있으면 링크, 없으면 회색 점선 + [추정치] ---------- */
+function num(n, opt = {}) {
+  if (!n || typeof n.value !== 'number') return '<span class="est">데이터 없음</span>';
+  const sign = opt.sign && n.value > 0 ? '+' : '';
+  const txt = `${sign}${fmt(n.value)}${opt.unit === false ? '' : ' ' + esc(n.unit)}`;
+  const u = safeUrl(n.source_url);
+  if (u) return `${txt}<a class="src" href="${esc(u)}" target="_blank" rel="noopener noreferrer">출처</a>`;
+  return `<span class="est">${txt}</span><span class="badge-est">추정치</span>`;
+}
+
+/* ---------- 화면 전환 ---------- */
+function show(view) {
+  ['input', 'progress', 'report'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== view));
+  const rep = view === 'report';
+  $('#nav').classList.toggle('hidden', !rep);
+  $('#bar-print').classList.toggle('hidden', !rep);
+  $('#bar-new').classList.toggle('hidden', !rep);
+  $('#bar-sample').classList.toggle('hidden', rep);
+  if (!rep) $('#tag-sample').classList.add('hidden');
+  window.scrollTo(0, 0);
+}
+function goHome() {
+  clearInterval(pollTimer); clearInterval(clockTimer); clearInterval(tipTimer);
+  history.replaceState(null, '', location.pathname);
+  show('input');
+}
+$('#brand').onclick = goHome;
+$('#bar-new').onclick = goHome;
+$('#bar-print').onclick = () => window.print();
+$('#bar-sample').onclick = $('#link-sample').onclick = e => { e.preventDefault(); openSample(); };
+
+/* ---------- 입력 ---------- */
+fetch('/api/examples').then(r => r.json()).then(d => {
+  $('#examples').insertAdjacentHTML('beforeend', d.examples.map(e => `<button type="button" class="chip">${esc(e)}</button>`).join(''));
+  $$('.chip').forEach(c => c.onclick = () => { $('#idea').value = c.textContent; start(); });
+}).catch(() => {});
+
+$('#ask').addEventListener('submit', e => { e.preventDefault(); start(); });
+
+/* ---------- 초대 코드 (서버가 요구할 때만 보인다) ---------- */
+let inviteRequired = false;
+const store = {get: k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } },
+               set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }};
+const inviteNote = (txt, cls = '') => { const n = $('#invite-note'); n.textContent = txt; n.className = 'note ' + cls; };
+
+fetch('/api/config').then(r => r.json()).then(c => {
+  inviteRequired = !!c.invite_required;
+  if (!inviteRequired) return;
+  $('#invite').classList.remove('hidden');
+  $('#invite-code').value = store.get('inviteCode');
+  if ($('#invite-code').value) checkInvite();
+}).catch(() => {});
+
+function checkInvite() {
+  const code = $('#invite-code').value.trim();
+  if (!code) { inviteNote('샘플 리포트는 코드 없이 볼 수 있어요.'); return Promise.resolve(false); }
+  return fetch('/api/invite/check', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({code})})
+    .then(async r => {
+      const d = await r.json();
+      if (!r.ok) { inviteNote(d.error || '확인하지 못했어요.', 'bad'); return false; }
+      store.set('inviteCode', code);
+      if (d.remaining > 0) inviteNote(d.lifetime_left != null ? `확인됐어요 · 총 ${d.limit}회 중 ${d.lifetime_left}회 남았어요` : '확인됐어요', 'ok');
+      else if (d.lifetime_left === 0) inviteNote(`이 코드의 사용 횟수(${d.limit}회)를 모두 썼어요.`, 'bad');
+      else inviteNote('오늘 서비스 사용량이 가득 찼어요. 내일 다시 이용해 주세요.', 'bad');
+      return true;
+    }).catch(() => { inviteNote('서버에 연결하지 못했어요.', 'bad'); return false; });
+}
+$('#invite-code').addEventListener('change', checkInvite);
+
+/* 서버(agents/normalizer.validate_idea)와 같은 규칙. 무의미 입력은 LLM 호출 전에 여기서 막는다.
+   JS의 \w는 유니코드를 모르므로(한글을 비단어로 취급) \W 기반 검사는 쓰지 않는다. */
+function validateIdea(t) {
+  if (!t) return '아이디어를 한 줄 적어 주세요.';
+  if (t.length < 2) return '너무 짧아요. 제품이나 서비스가 드러나게 적어 주세요.';
+  if (t.length > 100) return '100자 이내 한 줄로 적어 주세요.';
+  if (!/[가-힣]{2,}|[A-Za-z]{2,}/.test(t)) return '사업 아이템으로 읽히지 않아요. 아래 예시처럼 적어 보세요.';
+  if (new Set(t.replace(/\s/g, '')).size <= 2 && t.length >= 4) return '같은 글자가 반복돼 있어요. 아래 예시처럼 적어 보세요.';
+  return '';
+}
+
+function start() {
+  const idea = $('#idea').value.trim();
+  const bad = validateIdea(idea);
+  if (bad) { $('#err').textContent = bad; $('#idea').focus(); return; }
+  const code = $('#invite-code').value.trim();
+  if (inviteRequired && !code) { $('#err').textContent = '초대 코드를 입력해 주세요. 샘플 리포트는 코드 없이 볼 수 있어요.'; $('#invite-code').focus(); return; }
+  $('#err').textContent = '';
+  $('#go').disabled = true;
+  fetch('/api/analyze', {method: 'POST', headers: {'Content-Type': 'application/json'},
+                         body: JSON.stringify({idea, invite_code: code, fail_agents: window.FAIL_AGENTS || []})})
+    .then(async r => {
+      const d = await r.json();
+      if (!r.ok) { $('#err').textContent = d.error || '요청을 처리하지 못했어요.'; if (inviteRequired) checkInvite(); return; }
+      store.set('inviteCode', code);
+      showProgress(idea);
+      poll(d.job_id);
+    })
+    .catch(() => $('#err').textContent = '서버에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.')
+    .finally(() => $('#go').disabled = false);
+}
+
+/* ---------- 진행 화면 ---------- */
+const TIPS = [
+  '모든 숫자에는 출처가 붙어요. 출처를 못 찾은 숫자는 [추정치]로 표시해요.',
+  '반대파는 앞선 세 명의 결과가 나온 뒤에야 등장해서 그 결론을 공격해요.',
+  '반론은 근거 링크가 확인될 때만 점수에 반영돼요. 트집으로는 점수가 깎이지 않아요.',
+  '손익분기점은 “이만큼 팔아야 본전”이 되는 월 판매량이에요. 리포트에서 가장 크게 보여 드려요.',
+  '한 명이 실패해도 리포트는 나와요. 그 항목만 “데이터 부족”으로 표시돼요.'
+];
+// 카드 좌표(행/열)는 서버 AGENT_CARDS와 같다. 좌표·크기를 바꾸지 않고 내용물만 교체하면 캐릭터 이미지로 갈아끼울 수 있다.
+const ST = {idle: '대기 중', working: '작업 중', done: '완료', failed: '제외됨'};
+
+function showProgress(idea) {
+  show('progress');
+  $('#p-idea').textContent = `“${idea}” 분석 중이에요`;
+  const t0 = Date.now();
+  clearInterval(clockTimer);
+  clockTimer = setInterval(() => $('#p-elapsed').textContent = Math.floor((Date.now() - t0) / 1000), 1000);
+  let i = 0; $('#tip').textContent = '💡 ' + TIPS[0];
+  clearInterval(tipTimer);
+  tipTimer = setInterval(() => { i = (i + 1) % TIPS.length; $('#tip').textContent = '💡 ' + TIPS[i]; }, 7000);
+  $('#flow').innerHTML = '';
+}
+
+function flowLines() {
+  // 카드 중심선을 잇는 점선. cw=176, ch=150, 열 간격 40, 행 간격 26 (CSS 변수와 동일한 규격)
+  const cw = 176, ch = 150, gx = 40, gy = 26, X = c => c * (cw + gx) + cw / 2, Y = r => r * (ch + gy);
+  const p = [];
+  [0, 1, 2].forEach(c => { p.push(`M${X(1)} ${Y(0) + ch} C${X(1)} ${Y(1) - 12} ${X(c)} ${Y(1) - 14} ${X(c)} ${Y(1)}`);
+                          p.push(`M${X(c)} ${Y(1) + ch} C${X(c)} ${Y(2) - 12} ${X(1)} ${Y(2) - 14} ${X(1)} ${Y(2)}`); });
+  p.push(`M${X(1)} ${Y(2) + ch} L${X(1)} ${Y(3)}`);
+  return `<svg viewBox="0 0 ${cw * 3 + gx * 2} ${ch * 4 + gy * 3}" aria-hidden="true">${p.map(d => `<path d="${d}"/>`).join('')}</svg>`;
+}
+
+function renderCards(agents) {
+  const cw = 176, ch = 150, gx = 40, gy = 26;
+  $('#flow').innerHTML = flowLines() + agents.map(a => `
+    <div class="card" data-status="${a.status}" style="left:${a.col * (cw + gx)}px;top:${a.row * (ch + gy)}px">
+      <div class="avatar" aria-hidden="true">${a.icon}</div>
+      <div class="body"><div class="nm">${esc(a.name)}</div>
+        <div class="st">${ST[a.status] || ''}</div>
+        <div class="note">${esc(a.status === 'failed' ? '이 항목은 제외됐어요' : (a.progress_note || a.role))}</div></div>
+    </div>`).join('');
+  if (matchMedia('(max-width:680px)').matches) $$('#flow .card').forEach(c => { c.style.left = c.style.top = ''; });
+  const done = agents.filter(a => a.status === 'done' || a.status === 'failed').length;
+  $('#meter-fill').style.width = (done / agents.length * 100) + '%';
+  $('#meter-n').textContent = `${done} / ${agents.length}`;
+  const w = agents.find(a => a.status === 'working');
+  $('#meter-txt').textContent = w ? `${w.name}가 일하는 중` : (done === agents.length ? '마무리하는 중' : '준비 중');
+}
+
+function poll(jobId) {
+  clearInterval(pollTimer);
+  const tick = () => fetch(`/api/status/${jobId}`).then(r => r.json()).then(s => {
+    if (s.agents) renderCards(s.agents);
+    if (s.state === 'done')  { clearInterval(pollTimer); clearInterval(clockTimer); clearInterval(tipTimer); renderReport(s.report, {elapsed: s.elapsed}); }
+    if (s.state === 'error') { clearInterval(pollTimer); clearInterval(clockTimer); clearInterval(tipTimer); show('input'); $('#err').textContent = s.error || '분석 중 문제가 생겼어요.'; }
+  }).catch(() => {});
+  tick(); pollTimer = setInterval(tick, 1000);
+}
+
+/* ---------- 샘플 ---------- */
+function openSample() {
+  fetch('/sample_report.json').then(r => r.json()).then(r => renderReport(r, {sample: true}))
+    .catch(() => { $('#err').textContent = '샘플을 불러오지 못했어요.'; });
+}
+
+/* ---------- 리포트 ---------- */
+const NAV = [['sec-summary', '요점'], ['sec-scores', '사업성'], ['sec-market', '시장'], ['sec-roi', 'ROI'],
+             ['sec-feas', '실행'], ['sec-critic', '반론'], ['sec-road', '로드맵']];
+const AX = [['market', '시장성'], ['competition', '경쟁'], ['execution', '실행'], ['profitability', '수익성'], ['risk', '리스크']];
+
+function renderReport(r, opt = {}) {
+  window._lastReport = r;  // 다크모드 전환 시 차트 색을 다시 그리기 위해 보관
+  const dg = r.degraded_sections || [];
+  const view = $('#view-report');
+  view.innerHTML = [
+    opt.sample ? sampleBanner(r) : '',
+    hero(r), facts(r), secSummary(r), secScores(r), secMarket(r, dg), secRoi(r, dg),
+    secFeasibility(r, dg), secCritique(r, dg), secRoadmap(r, dg), foot(r, opt)
+  ].join('');
+  $('#nav').innerHTML = NAV.map(([id, t]) => `<a href="#${id}" data-id="${id}">${t}</a>`).join('');
+  $('#tag-sample').classList.toggle('hidden', !opt.sample);
+  show('report');
+  drawRadar(r);
+  $$('.axis', view).forEach(el => el.onclick = () => el.setAttribute('aria-expanded', el.getAttribute('aria-expanded') !== 'true'));
+  $$('[data-act=new]', view).forEach(b => b.onclick = goHome);
+  $$('[data-act=print]', view).forEach(b => b.onclick = () => window.print());
+  watchSections();
+}
+
+function watchSections() {
+  if (spy) spy.disconnect();
+  spy = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) $$('#nav a').forEach(a => a.classList.toggle('on', a.dataset.id === e.target.id));
+  }), {rootMargin: '-25% 0px -65% 0px'});
+  NAV.forEach(([id]) => { const el = document.getElementById(id); if (el) spy.observe(el); });
+}
+
+function sampleBanner(r) {
+  return `<div class="sample-banner"><b>샘플 리포트</b><span>“${esc(r.idea_raw)}”를 실제로 분석한 결과 예시예요. 내 아이디어는 다르게 나옵니다.</span>
+    <span class="sp"></span><button class="btn sm" data-act="new">내 아이디어 분석하기</button></div>`;
+}
+
+const GRADE_LEGEND = [['A', '진행'], ['B', '조건부 진행'], ['C', '소규모 검증 후 재판단'], ['C-', '보류'], ['D', '비권장']];
+function gradeKey(g) { return g === 'C-' ? 'C-' : g[0]; }
+
+function hero(r) {
+  const v = r.verdict, n = r.normalized, gk = gradeKey(v.grade);
+  const on = GRADE_LEGEND.find(([k]) => k === gk) ? gk : '';
+  return `<div class="hero">
+    <div class="eyebrow">분석 리포트</div>
+    <h1 class="idea">${esc(r.idea_raw)}</h1>
+    <div class="prod">${esc(n.product)}</div>
+    <div class="verdict">
+      <div class="grade" aria-label="종합 등급 ${esc(v.grade)}">${esc(v.grade)}</div>
+      <div><div class="dec">${esc(v.decision)}</div><div class="one">${esc(v.one_liner)}</div></div>
+    </div>
+    <div class="legend" aria-label="등급 읽는 법"><span>등급 읽는 법</span>
+      ${GRADE_LEGEND.map(([k, t]) => `<span class="lg ${k === on ? 'on' : ''}">${k} ${t}</span>`).join('')}</div>
+    <div class="assume">
+      <b class="h">이 분석이 서 있는 가정</b>
+      <div class="s">내 상황과 다르면 결과도 달라져요. 가정을 먼저 확인해 보세요.</div>
+      <ul>${(r.assumptions || []).map(a => `<li><b>${esc(a.key)}</b> — ${esc(a.value)}</li>`).join('')}</ul>
+    </div></div>`;
+}
+
+function facts(r) {
+  const o = r.roi;
+  const na = '<span class="est">데이터 부족</span>';
+  const be = o ? o.break_even.units_per_month : null;
+  const base = o ? o.scenarios.base.cumulative_profit_12m : null;
+  return `<div class="facts">
+    <div class="fact"><div class="k">손익분기 (이만큼 팔아야 본전)</div>
+      <div class="v mono">${be ? (be.value > 0 ? '월 ' + fmt(be.value) + '개' : '도달 불가') : na}</div>
+      <div class="n">월 고정비 ÷ 개당 기여이익</div></div>
+    <div class="fact"><div class="k">총 초기 투자</div>
+      <div class="v mono">${o ? num(o.total_initial_investment) : na}</div>
+      <div class="n">${o ? esc(o.initial_investment.length) + '개 항목 합계' : ''}</div></div>
+    <div class="fact"><div class="k">12개월 누적 손익 (기본 시나리오)</div>
+      <div class="v mono">${base ? num(base, {sign: true}) : na}</div>
+      <div class="n">초기투자 포함, 세전</div></div>
+  </div>`;
+}
+
+const head = (id, ico, title, by) =>
+  `<div class="sec-head"><div class="ico" aria-hidden="true">${ico}</div><h2>${title}</h2>${by ? `<div class="by">작성 · ${by}</div>` : ''}</div>`;
+
+function secSummary(r) {
+  const n = r.normalized;
+  const alt = n.alternative_interpretation
+    ? `<p class="alt">다른 해석: ${esc(n.alternative_interpretation)} (업종 분류 확신도 ${Math.round(n.industry_confidence * 100)}%)</p>` : '';
+  return `<section class="sec" id="sec-summary">${head('', '🔍', '아이디어 요점', '해석가')}
+    <div class="grid3">
+      <div class="tile"><div class="k">제품</div><div class="v">${esc(n.product)}</div></div>
+      <div class="tile"><div class="k">타깃</div><div class="v">${esc(n.target)}</div></div>
+      <div class="tile"><div class="k">차별점</div><div class="v">${esc(n.differentiator)}</div></div>
+    </div>${alt}</section>`;
+}
+
+function secScores(r) {
+  const anyAdj = AX.some(([k]) => r.scores[k] && r.scores[k].adjusted_from != null);
+  const rows = AX.map(([k, label]) => {
+    const s = r.scores[k];
+    if (!s) return `<div class="axis" style="cursor:default"><div class="top"><div class="nm">${label}</div><div class="trk"></div><div class="val est">—</div><div class="adj"></div></div>
+      <div class="hint">데이터 부족 — 분석에서 제외됐어요</div></div>`;
+    const adj = s.adjusted_from != null ? `${s.adjusted_from}→${s.score}` : '';
+    return `<button class="axis" aria-expanded="false" aria-label="${label} ${s.score}점, 근거 펼치기">
+      <div class="top"><div class="nm">${label}</div>
+        <div class="trk"><i style="width:${s.score * 10}%"></i></div>
+        <div class="val mono">${s.score}<span style="color:var(--muted);font-weight:500">/10</span></div>
+        <div class="adj" title="비평 반영으로 조정됨">${adj}</div></div>
+      <div class="hint">근거 보기 ▾</div>
+      <div class="why">${esc(s.rationale)}<small>채점 구간 ${esc(s.rubric_ref)}${s.adjusted_from != null ? ` · 비평 반영 ${s.adjusted_from}→${s.score}` : ''}</small></div>
+    </button>`;
+  }).join('');
+  return `<section class="sec" id="sec-scores">${head('', '⚖️', '사업성 평가', '심사위원')}
+    <p class="concl">5개 축의 가중 평균은 <b>${r.meta.weighted_average ?? '—'}</b>점이고, 종합 등급은 <b>${esc(r.verdict.grade)}</b>이다. 축을 누르면 채점 근거가 펼쳐진다.</p>
+    <div class="scores">
+      <div><div class="radar-box"><canvas id="radar" role="img" aria-label="5축 사업성 레이더 차트"></canvas></div>
+        <div class="rl"><span><i></i>최종 점수</span>${anyAdj ? '<span><i class="dash"></i>비평 반영 전</span>' : ''}</div></div>
+      <div>${rows}</div>
+    </div></section>`;
+}
+
+function drawRadar(r) {
+  const el = document.getElementById('radar');
+  if (!el) return;
+  if (radar) radar.destroy();
+  const accent = css('--accent'), muted = css('--muted'), line = css('--line'), ink = css('--ink');
+  const fin = AX.map(([k]) => r.scores[k] ? r.scores[k].score : 0);
+  const before = AX.map(([k]) => r.scores[k] ? (r.scores[k].adjusted_from ?? r.scores[k].score) : 0);
+  const anyAdj = before.some((v, i) => v !== fin[i]);
+  const sets = [];
+  if (anyAdj) sets.push({label: '비평 반영 전', data: before, borderColor: muted, borderDash: [5, 4], borderWidth: 1.5, backgroundColor: 'transparent', pointRadius: 0, fill: false});
+  sets.push({label: '최종 점수', data: fin, borderColor: accent, backgroundColor: css('--accent-soft'), borderWidth: 2.5,
+             pointBackgroundColor: accent, pointBorderColor: css('--panel'), pointBorderWidth: 2, pointRadius: 4.5, pointHoverRadius: 6});
+  radar = new Chart(el, {
+    type: 'radar',
+    data: {labels: AX.map(a => a[1]), datasets: sets},
+    options: {
+      responsive: true, maintainAspectRatio: true, aspectRatio: 1,
+      animation: matchMedia('(prefers-reduced-motion:reduce)').matches ? false : {duration: 700},
+      plugins: {legend: {display: false},
+                tooltip: {callbacks: {label: c => ` ${c.dataset.label}: ${c.parsed.r}/10`}}},
+      scales: {r: {min: 0, max: 10, ticks: {stepSize: 2, font: {size: 10}, color: muted, backdropColor: 'transparent'},
+                   grid: {color: line}, angleLines: {color: line},
+                   pointLabels: {font: {size: 13.5, weight: '700', family: 'Pretendard Variable, Malgun Gothic, sans-serif'}, color: ink}}}
+    }
+  });
+}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { window._lastReport && drawRadar(window._lastReport); });
+
+const degradedBox = what => `<div class="degraded"><b>데이터 부족</b> — ${what} 항목은 분석에서 제외됐어요.<br>나머지 섹션은 정상 분석 결과예요.</div>`;
+
+function secMarket(r, dg) {
+  const h = head('', '🔭', '시장 배경지식', '정찰병');
+  if (dg.includes('market') || !r.market) return `<section class="sec" id="sec-market">${h}${degradedBox('시장')}</section>`;
+  const m = r.market;
+  const comp = (m.competitors || []).map(c => {
+    const u = safeUrl(c.url);
+    return `<tr><td><b>${esc(c.name)}</b>${u ? `<a class="src" href="${esc(u)}" target="_blank" rel="noopener noreferrer">링크</a>` : ''}</td>
+      <td>${esc(c.positioning)}</td><td>${esc(c.note || '')}</td></tr>`;
+  }).join('');
+  const lvTxt = {상: '강함', 중: '보통', 하: '약함'}[m.competition_level] || esc(m.competition_level);
+  return `<section class="sec" id="sec-market">${h}
+    <p class="concl">${esc(m.summary)}</p>
+    <div class="grid3">
+      <div class="tile kpi"><div class="k">시장 규모</div><div class="v">${num(m.size)}</div></div>
+      <div class="tile kpi"><div class="k">성장률</div><div class="v">${num(m.growth)}</div></div>
+      <div class="tile kpi"><div class="k">경쟁 강도</div><div class="v">${lvTxt}</div></div>
+    </div>
+    ${comp ? `<div class="tscroll" style="margin-top:20px"><table><thead><tr><th>주요 경쟁사</th><th>포지셔닝</th><th>차별점과의 관계</th></tr></thead><tbody>${comp}</tbody></table></div>` : ''}
+    <ul style="margin:18px 0 0;padding-left:18px">${(m.trends || []).map(t => `<li style="margin:5px 0">${esc(t)}</li>`).join('')}</ul>
+  </section>`;
+}
+
+function scenarioBars(sc) {
+  const keys = [['conservative', '보수'], ['base', '기본'], ['optimistic', '낙관']];
+  const vals = keys.map(([k]) => sc[k].cumulative_profit_12m.value);
+  const maxAbs = Math.max(...vals.map(Math.abs), 1);
+  const hasNeg = vals.some(v => v < 0), hasPos = vals.some(v => v > 0);
+  const negSpan = hasNeg ? Math.max(...vals.filter(v => v < 0).map(v => -v)) : 0;
+  const posSpan = hasPos ? Math.max(...vals.filter(v => v > 0)) : 0;
+  const total = (negSpan + posSpan) || 1;
+  const zero = (negSpan / total) * 100;
+  return `<div class="scen">${keys.map(([k, l], i) => {
+    const v = vals[i], pct = Math.abs(v) / total * 100;
+    const bar = v >= 0 ? `<i class="pos" style="width:${pct}%"></i>` : `<i class="neg" style="left:${zero - pct}%;width:${pct}%"></i>`;
+    const c = sc[k].cumulative_profit_12m;
+    return `<div class="row"><div class="lb">${l}<small>월 ${fmt(sc[k].monthly_units.value)}개</small></div>
+      <div class="dv" style="--zero:${zero}%">${bar}</div>
+      <div class="amt mono ${v < 0 ? 'neg' : ''}">${num(c, {sign: true})}</div></div>`;
+  }).join('')}</div>
+  <div class="scen-note">막대 기준선 왼쪽은 손실, 오른쪽은 이익이에요. 초기 투자를 포함한 12개월 누적 손익(세전)이에요.</div>`;
+}
+
+function secRoi(r, dg) {
+  const h = head('', '🧮', 'ROI 시뮬레이션', '회계사');
+  if (dg.includes('roi') || !r.roi) return `<section class="sec" id="sec-roi">${h}${degradedBox('ROI')}</section>`;
+  const o = r.roi, ue = o.unit_economics, be = o.break_even;
+  const inv = o.initial_investment.map(i => `<tr><td>${esc(i.item)}</td><td class="num">${num(i.amount)}</td></tr>`).join('');
+  const bepTxt = be.units_per_month.value > 0 ? `월 ${fmt(be.units_per_month.value)}개` : '도달 불가';
+  return `<section class="sec" id="sec-roi">${h}
+    <p class="concl">${esc(o.summary)}</p>
+    <div class="two" style="display:grid;grid-template-columns:1fr 1fr;gap:26px">
+      <div class="tscroll"><table><thead><tr><th>초기 투자</th><th class="num">금액</th></tr></thead><tbody>${inv}
+        <tr class="total"><td>합계</td><td class="num">${num(o.total_initial_investment)}</td></tr></tbody></table></div>
+      <div class="tscroll"><table><thead><tr><th>단위 경제 (1개 팔 때)</th><th class="num">금액</th></tr></thead><tbody>
+        <tr><td>판매가</td><td class="num">${num(ue.price)}</td></tr>
+        <tr><td>제품 원가</td><td class="num">${num(ue.unit_cost)}</td></tr>
+        <tr><td>변동비 (수수료·배송·광고·반품)</td><td class="num">${num(ue.variable_cost)}</td></tr>
+        <tr class="total"><td>개당 기여이익</td><td class="num">${num(ue.contribution_margin)}</td></tr>
+        <tr><td>월 고정비</td><td class="num">${num(o.fixed_cost_monthly)}</td></tr></tbody></table></div>
+    </div>
+    <div class="bep">
+      <div class="lbl">손익분기점 — 이만큼 팔아야 본전이에요</div>
+      <div class="big mono">${bepTxt}</div>
+      <div class="sub">초기투자 회수 ${be.payback_months.value > 0 ? fmt(be.payback_months.value) + '개월' : '불가'} · 월 고정비 ÷ 개당 기여이익</div>
+    </div>
+    <h3 style="font-size:15px;margin-bottom:6px">12개월 시나리오</h3>
+    ${scenarioBars(o.scenarios)}
+  </section>`;
+}
+
+const LV = {상: ['▲', '부담 큼'], 중: ['●', '보통'], 하: ['▽', '낮음']};
+function secFeasibility(r, dg) {
+  const h = head('', '🦺', '실행가능성 & 리스크', '현장반장');
+  if (dg.includes('feasibility') || !r.feasibility) return `<section class="sec" id="sec-feas">${h}${degradedBox('실행가능성')}</section>`;
+  const f = r.feasibility;
+  const tile = (k, label) => {
+    const b = f[k], lv = LV[b.level] || ['', esc(b.level)];
+    return `<div class="tile"><div class="k">${label} <span class="lv ${esc(b.level)}">${lv[0]} ${lv[1]}</span></div>
+      <div class="v" style="font-weight:600">${esc(b.summary)}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:8px">${esc(b.detail || '')}</div>
+      ${b.lead_time_weeks && b.lead_time_weeks.value > 0 ? `<div style="font-size:13px;margin-top:8px">소요 ${num(b.lead_time_weeks)}</div>` : ''}</div>`;
+  };
+  return `<section class="sec" id="sec-feas">${h}
+    <p class="concl">${esc(f.summary)}</p>
+    <div class="grid4">${tile('tech', '기술')}${tile('capital', '자금')}${tile('people', '인력')}${tile('regulation', '규제')}</div>
+    <p class="fnote">▲ 부담·위험이 큼 · ● 보통 · ▽ 낮음</p>
+  </section>`;
+}
+
+function secCritique(r, dg) {
+  const h = head('', '🔻', '반대파의 반론', '반대파');
+  if (dg.includes('critique') || !r.critique) return `<section class="sec" id="sec-critic">${h}${degradedBox('비평')}</section>`;
+  const c = r.critique, applied = r.meta.applied_adjustments || [];
+  const LB = Object.fromEntries(AX);
+  const objs = c.objections.map(o => {
+    const u = safeUrl(o.evidence_url);
+    return `<div class="obj"><div class="angle">${esc(o.angle)}</div><div class="claim">${esc(o.claim)}</div>
+      <div class="ev">${esc(o.evidence)}${u ? ` <a href="${esc(u)}" target="_blank" rel="noopener noreferrer">출처</a>` : ' <span style="opacity:.8">(근거 링크 없음 · 점수에는 반영되지 않아요)</span>'}</div></div>`;
+  }).join('');
+  const txt = applied.length ? applied.map(a => `${LB[a.axis]} ${a.from}→${a.to}`).join(', ') : '근거 링크가 확인된 조정이 없어 점수는 그대로예요';
+  return `<section class="sec inv" id="sec-critic">${h}
+    <p class="concl">이 리포트는 자기 결론을 스스로 의심해요. 아래는 위 결론을 공격한 결과예요.</p>
+    ${objs}
+    <div class="applied"><b>점수 반영:</b> ${esc(txt)}
+      <small>반대파는 점수를 직접 고칠 수 없어요. 축당 -2~0점을 제안하고, 근거 링크가 검색 결과에 실제로 있을 때만 반영돼요.</small></div>
+  </section>`;
+}
+
+function secRoadmap(r, dg) {
+  const h = head('', '🗺️', '3단계 로드맵', '심사위원');
+  if (dg.includes('roadmap') || !r.roadmap || !r.roadmap.length) return `<section class="sec" id="sec-road">${h}${degradedBox('로드맵')}</section>`;
+  const st = r.roadmap.map((s, i) => `<div class="stage"><div class="no">${i + 1}</div>
+      <div class="st">${esc(s.stage)}</div>
+      <div class="pd">${esc(s.period)} · 예상 비용 ${num(s.cost)}</div>
+      <ul>${s.actions.map(a => `<li>${esc(a)}</li>`).join('')}</ul>
+      <div class="gate"><b>다음 단계로 가는 조건</b>${esc(s.gate_condition)}</div></div>`).join('');
+  return `<section class="sec" id="sec-road">${h}
+    <p class="concl">검증, 최소판매, 확장 순으로 나아가고, 각 단계의 조건을 채우지 못하면 멈춘다.</p>
+    <div class="road">${st}</div></section>`;
+}
+
+function foot(r, opt) {
+  const src = (r.sources || []).map(s => {
+    const u = safeUrl(s.url);
+    return `<li>${u ? `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}</a>` : esc(s.title)} — ${esc(s.used_for)}</li>`;
+  }).join('');
+  const n = (r.sources || []).length;
+  const meta = [opt.elapsed ? `분석 ${Math.round(opt.elapsed)}초` : '', `검색 ${(r.meta.queries_run || []).length}회`].filter(Boolean).join(' · ');
+  return `<footer class="rf">
+    <details><summary>출처 ${n}건 보기</summary>
+      <ol>${src || '<li>인용된 출처가 없어요. 모든 수치가 추정치예요.</li>'}</ol></details>
+    <p class="disc">본 리포트는 공개된 웹 자료와 업종 표준값에 기반한 <b>참고용 분석</b>이며 투자·창업 권유가 아닙니다. <span class="badge-est" style="margin:0">추정치</span> 표시 수치는 출처를 확인하지 못한 값이에요. 최종 판단과 책임은 이용자에게 있어요. (${meta})</p>
+    <div class="cta no-print"><span class="sp"></span>
+      <button class="btn ghost" data-act="print">PDF로 저장</button>
+      <button class="btn" data-act="new">다른 아이디어 분석하기</button></div>
+  </footer>`;
+}
+
+/* 개발용: 주소 끝 ?fail=finance → 재무 에이전트를 일부러 실패시켜 부분 실패 화면 확인 / ?sample=1 → 샘플 바로 열기 */
+const qs = new URLSearchParams(location.search);
+if (qs.get('fail')) window.FAIL_AGENTS = qs.get('fail').split(',');
+if (qs.get('sample')) openSample();
+</script>
+</body>
+</html>

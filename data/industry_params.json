@@ -1,0 +1,161 @@
+{
+  "_meta": {
+    "version": 1,
+    "note": "제조·커머스만 정교화. 나머지 6업종은 generic_defaults를 그대로 쓰는 범용 기본값이다. 모든 값은 출처 없는 업종 표준 추정치이므로 리포트에서 confidence=estimated로 표기된다.",
+    "units": {
+      "investment_items": "만원",
+      "monthly_fixed_items": "만원",
+      "rates": "판매가 대비 비율(0~1)",
+      "per_order_costs": "원"
+    }
+  },
+  "scenario_model": {
+    "ramp": [0.2, 0.4, 0.6, 0.8, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "volume_multiplier": { "conservative": 0.5, "base": 1.0, "optimistic": 1.8 },
+    "cumulative_profit_formula": "sum(monthly_units * contribution_margin_won)/10000 - fixed_cost_monthly_manwon*12 - total_initial_investment_manwon"
+  },
+  "generic_defaults": {
+    "investment_items": [
+      { "key": "build", "label": "제품·서비스 구축", "low": 300, "base": 800, "high": 2000 },
+      { "key": "launch_marketing", "label": "초기 마케팅", "low": 200, "base": 500, "high": 1000 },
+      { "key": "legal_setup", "label": "사업자·법무·기타", "low": 50, "base": 100, "high": 200 },
+      { "key": "working_capital", "label": "운영 예비자금", "low": 200, "base": 500, "high": 1000 }
+    ],
+    "monthly_fixed_items": [
+      { "key": "tools_infra", "label": "도구·인프라", "low": 20, "base": 50, "high": 150 },
+      { "key": "marketing_base", "label": "상시 마케팅", "low": 100, "base": 200, "high": 500 },
+      { "key": "labor_outsourcing", "label": "인력·외주", "low": 100, "base": 250, "high": 600 }
+    ],
+    "unit_economics_defaults": {
+      "channel_fee_rate": { "low": 0.05, "base": 0.10, "high": 0.20 },
+      "ad_cost_rate": { "low": 0.10, "base": 0.15, "high": 0.25 },
+      "return_rate": { "low": 0.02, "base": 0.05, "high": 0.10 },
+      "shipping_per_order_won": { "low": 0, "base": 0, "high": 3000 },
+      "unit_cost_ratio": { "low": 0.20, "base": 0.35, "high": 0.50 }
+    }
+  },
+  "industries": {
+    "manufacturing": {
+      "label": "소비재 하드웨어 제조",
+      "refined": true,
+      "default_interpretation": "oem_import",
+      "interpretations": {
+        "oem_import": {
+          "label": "해외 OEM 수입·자체 브랜드 (기본 해석, 저자본)",
+          "investment_items": [
+            { "key": "sample_dev", "label": "샘플·설계 검증", "low": 100, "base": 200, "high": 400 },
+            { "key": "first_batch", "label": "초도 물량 매입", "low": 500, "base": 900, "high": 1500 },
+            { "key": "certification", "label": "KC 등 인증", "low": 100, "base": 300, "high": 600 },
+            { "key": "packaging_content", "label": "패키지·촬영·상세페이지", "low": 100, "base": 250, "high": 500 },
+            { "key": "launch_marketing", "label": "초기 마케팅", "low": 300, "base": 600, "high": 1200 },
+            { "key": "setup_misc", "label": "사업자·통관·기타", "low": 30, "base": 80, "high": 150 }
+          ]
+        },
+        "own_manufacturing": {
+          "label": "국내 자체 제조 (금형 포함, 총투자 약 3배)",
+          "investment_items": [
+            { "key": "design_dev", "label": "제품 설계·시제품", "low": 500, "base": 1000, "high": 2000 },
+            { "key": "mold", "label": "금형", "low": 500, "base": 1200, "high": 3000 },
+            { "key": "first_batch", "label": "초도 생산(MOQ)", "low": 800, "base": 1500, "high": 3000 },
+            { "key": "certification", "label": "KC 등 인증", "low": 150, "base": 400, "high": 800 },
+            { "key": "packaging_content", "label": "패키지·촬영·상세페이지", "low": 150, "base": 300, "high": 600 },
+            { "key": "launch_marketing", "label": "초기 마케팅", "low": 300, "base": 600, "high": 1200 },
+            { "key": "setup_misc", "label": "사업자·법무·기타", "low": 50, "base": 150, "high": 300 }
+          ]
+        }
+      },
+      "monthly_fixed_items": [
+        { "key": "ad_base", "label": "상시 광고 최소 집행", "low": 100, "base": 200, "high": 400 },
+        { "key": "logistics_storage", "label": "보관·물류 고정비", "low": 10, "base": 30, "high": 80 },
+        { "key": "tools_subscription", "label": "쇼핑몰·도구 구독", "low": 5, "base": 15, "high": 40 },
+        { "key": "cs_part_time", "label": "CS·운영 인력(파트타임)", "low": 0, "base": 100, "high": 200 }
+      ],
+      "unit_economics_defaults": {
+        "channel_fee_rate": { "low": 0.05, "base": 0.08, "high": 0.12 },
+        "ad_cost_rate": { "low": 0.10, "base": 0.15, "high": 0.25 },
+        "return_rate": { "low": 0.03, "base": 0.06, "high": 0.12 },
+        "shipping_per_order_won": { "low": 2500, "base": 3000, "high": 4000 },
+        "unit_cost_ratio": { "low": 0.25, "base": 0.33, "high": 0.45 }
+      },
+      "lead_times_weeks": {
+        "certification": { "low": 4, "base": 8, "high": 12 },
+        "first_batch_delivery": { "low": 3, "base": 6, "high": 10 }
+      }
+    },
+    "commerce": {
+      "label": "커머스 (사입·유통·D2C 판매)",
+      "refined": true,
+      "default_interpretation": "default",
+      "interpretations": {
+        "default": {
+          "label": "온라인 사입·판매 (기본)",
+          "investment_items": [
+            { "key": "initial_inventory", "label": "초도 재고 사입", "low": 300, "base": 700, "high": 1500 },
+            { "key": "content_listing", "label": "촬영·상세페이지·입점", "low": 50, "base": 150, "high": 400 },
+            { "key": "launch_ads", "label": "런칭 광고", "low": 200, "base": 500, "high": 1000 },
+            { "key": "import_customs", "label": "통관·수입 부대비용", "low": 0, "base": 60, "high": 200 },
+            { "key": "setup_misc", "label": "사업자·통신판매업·기타", "low": 20, "base": 50, "high": 100 }
+          ]
+        }
+      },
+      "monthly_fixed_items": [
+        { "key": "ad_base", "label": "상시 광고 최소 집행", "low": 100, "base": 200, "high": 500 },
+        { "key": "logistics_storage", "label": "보관·물류 고정비", "low": 10, "base": 30, "high": 100 },
+        { "key": "tools_subscription", "label": "쇼핑몰·도구 구독", "low": 5, "base": 15, "high": 40 },
+        { "key": "cs_part_time", "label": "CS·운영 인력(파트타임)", "low": 0, "base": 100, "high": 200 }
+      ],
+      "unit_economics_defaults": {
+        "channel_fee_rate": { "low": 0.06, "base": 0.10, "high": 0.15 },
+        "ad_cost_rate": { "low": 0.10, "base": 0.18, "high": 0.30 },
+        "return_rate": { "low": 0.03, "base": 0.07, "high": 0.15 },
+        "shipping_per_order_won": { "low": 2500, "base": 3000, "high": 4000 },
+        "unit_cost_ratio": { "low": 0.35, "base": 0.50, "high": 0.65 }
+      },
+      "lead_times_weeks": {
+        "first_batch_delivery": { "low": 2, "base": 4, "high": 8 }
+      }
+    },
+    "saas_software": {
+      "label": "SaaS·소프트웨어",
+      "refined": false,
+      "generic": true,
+      "unit_name": "구독 고객",
+      "hints": "월 구독료 기준. 변동비는 결제 수수료·서버 원가, 광고비는 CAC(고객 1명 획득 비용)로 갈음"
+    },
+    "offline_store": {
+      "label": "오프라인 매장·외식",
+      "refined": false,
+      "generic": true,
+      "unit_name": "객단가 결제 건",
+      "hints": "보증금·권리금·인테리어가 초기투자의 대부분. 상권·임대료가 월 고정비의 핵심"
+    },
+    "service_agency": {
+      "label": "서비스·대행·컨설팅",
+      "refined": false,
+      "generic": true,
+      "unit_name": "계약 건",
+      "hints": "인건비가 변동비. 초기투자는 작지만 창업자 시간이 병목"
+    },
+    "content_media": {
+      "label": "콘텐츠·미디어",
+      "refined": false,
+      "generic": true,
+      "unit_name": "구독·광고 수익 단위",
+      "hints": "제작비가 고정비, 수익은 광고·구독·협찬. 초기 구독자 확보 기간이 길다"
+    },
+    "platform_marketplace": {
+      "label": "플랫폼·마켓플레이스",
+      "refined": false,
+      "generic": true,
+      "unit_name": "거래 건",
+      "hints": "양면 시장의 초기 공급자·수요자 확보 비용이 핵심. 수익은 거래 수수료"
+    },
+    "education_coaching": {
+      "label": "교육·코칭",
+      "refined": false,
+      "generic": true,
+      "unit_name": "수강생",
+      "hints": "콘텐츠 제작비가 초기투자, 수강생 모집 광고비가 변동비의 대부분"
+    }
+  }
+}

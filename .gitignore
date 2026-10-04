@@ -1,0 +1,8 @@
+.env
+.venv/
+__pycache__/
+.cache/
+reports/
+data/invite_codes.txt
+data/usage.json
+data/lifetime.json
